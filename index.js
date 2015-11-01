@@ -8,10 +8,13 @@ var quotes = [
   { author : 'Neale Donald Walsch', text : "You are afraid to die, and you’re afraid to live. What a way to exist."}
 ];
 
+var applications = [];
+
 app.use(express.bodyParser());
 
+
 app.get('/', function(req, res) {
-  res.json(quotes);
+  res.json(applications);
 });
 
 app.get('/quote/random', function(req, res) {
@@ -55,4 +58,31 @@ app.delete('/quote/:id', function(req, res) {
   res.json(true);
 });
 
-app.listen(process.env.PORT || 3412);
+app.post('/', function(req, res) {
+  var fraudScore = 15;
+
+  function compare(application, index, array) {
+    if (application.lastName !== newApplication.lastName) {
+      if(application.fingerprint === newApplication.fingerprint) {
+        fraudScore = fraudScore * 2;
+      }
+    }
+  }
+
+  var newApplication = {
+    lastName: req.body.lastName,
+    fingerprint: req.body.fingerprint
+  };
+
+  applications.forEach(compare);
+
+  applications.push(newApplication);
+
+  res.setHeader("Access-Control-Allow-Origin", "*");
+  res.setHeader("Access-Control-Allow-Headers", "Origin, X-Requested-With, Content-Type, Accept");
+  res.json(fraudScore);
+
+  fraudScore = 15;
+});
+
+app.listen(process.env.PORT || 1112);
