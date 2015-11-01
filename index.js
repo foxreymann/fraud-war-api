@@ -10,6 +10,8 @@ var quotes = [
 
 var applications = [];
 
+  var fraudScore = 15;
+
 app.use(express.bodyParser());
 
 
@@ -59,12 +61,13 @@ app.delete('/quote/:id', function(req, res) {
 });
 
 app.post('/', function(req, res) {
-  var fraudScore = 15;
+  res.setHeader("Access-Control-Allow-Origin", "*");
+  res.setHeader("Access-Control-Allow-Headers", "Origin, X-Requested-With, Content-Type, Accept");
 
   function compare(application, index, array) {
     if (application.lastName !== newApplication.lastName) {
       if(application.fingerprint === newApplication.fingerprint) {
-        fraudScore = fraudScore * 2;
+        res.json({fraudScore: 30});
       }
     }
   }
@@ -78,11 +81,7 @@ app.post('/', function(req, res) {
 
   applications.push(newApplication);
 
-  res.setHeader("Access-Control-Allow-Origin", "*");
-  res.setHeader("Access-Control-Allow-Headers", "Origin, X-Requested-With, Content-Type, Accept");
-  res.json(fraudScore);
-
-  fraudScore = 15;
+  res.json({fraudScore: 15});
 });
 
 app.listen(process.env.PORT || 1112);
